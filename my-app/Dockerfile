@@ -4,6 +4,8 @@ WORKDIR /usr/src/app/my-app
 
 COPY package*.json ./
 
+COPY . .
+
 RUN yarn
 
 EXPOSE 3000

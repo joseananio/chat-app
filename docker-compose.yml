@@ -7,9 +7,9 @@ services:
     ports:
       - '8443:8443'
       - '3001:3001'
-    volumes:
-      - ./api:/usr/src/app/api
-      - /usr/src/app/api/node_modules
+    # volumes:
+    #   - ./api:/usr/src/app/api
+    #   - /usr/src/app/api/node_modules
     # environment:
     #   MONGO_DB_URI: mongodb://mongo:27017/node-auth
     #   MONGODB_DB: 'ChatApp'
@@ -24,9 +24,9 @@ services:
       - '3000:3000'
     links:
       - chat_api
-    volumes:
-      - ./my-app:/usr/src/app/my-app
-      - /usr/src/app/my-app/node_modules
+    # volumes:
+    #   - ./my-app:/usr/src/app/my-app
+    #   - /usr/src/app/my-app/node_modules
     stdin_open: true
 
   # mongo:
