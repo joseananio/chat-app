@@ -1,0 +1,282 @@
+@import '../../variables';
+
+.layout {
+  padding: 0 3rem;
+  width: 100%;
+  position: relative;
+}
+
+.chatWindow {
+  padding: 1.5rem;
+  background-color: $primary-color-light;
+  // border: 1px solid darken($color: $primary-color-light, $amount: 5);
+  border-radius: $chat-radius;
+  height: 95vh;
+
+  position: relative;
+
+  .send-btn {
+    background-color: $color-3;
+    padding: 0.5rem 1rem;
+    border-radius: $chat-radius/2;
+  }
+}
+
+.chat {
+  margin: 0;
+  height: 80vh;
+  padding: 0;
+  padding-right: 0.5rem;
+  overflow-y: auto;
+
+  li {
+    margin: 0.25rem 0 !important;
+    display: flex;
+    flex-direction: row;
+
+    list-style-type: none;
+
+    .msg {
+      max-width: 50%;
+      padding: 0.5rem 0.8rem;
+
+      box-shadow: 5px 5px 3px rgba($primary-color-light, 0.5);
+      border: 0.5px solid #ddd;
+      border-radius: $chat-radius;
+
+      background-color: #fff;
+
+      @media (max-width: 520px) {
+        max-width: 80%;
+      }
+
+      p {
+        text-align: left;
+        font-size: 0.8rem;
+        color: $username-color;
+        font-weight: bold;
+        letter-spacing: 0.5px;
+      }
+
+      .message {
+        text-align-last: left;
+        font-size: 1.2rem;
+        color: $text-color;
+      }
+    }
+
+    &.other {
+      justify-content: flex-start;
+      .msg {
+        border-top-left-radius: $chat-radius-mini;
+      }
+    }
+
+    &.self {
+      justify-content: flex-end !important;
+
+      .msg {
+        border-bottom-right-radius: $chat-radius-mini;
+        background-color: $color-2;
+
+        p {
+          text-align: right;
+          color: #ccc;
+        }
+
+        .message {
+          color: #f1f1f1;
+        }
+      }
+    }
+  }
+}
+.chatInputWrapper {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  margin-top: 1.5rem;
+  background-color: white;
+  border-radius: $chat-radius;
+  box-shadow: 0 0 3px #ccc;
+  overflow: hidden;
+  padding: 0.75rem 1rem;
+
+  form {
+    input {
+      width: 100%;
+      position: relative;
+      padding: 0.5rem 0.5rem;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+  }
+}
+
+.sidebar {
+  height: 95vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 1.5rem;
+
+  li {
+    height: 64px;
+    margin-bottom: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: $chat-radius * 1.5;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    &:first-child {
+      border: 1px solid darken($color: $primary-color-light, $amount: 5);
+      background-color: $primary-color-light;
+    }
+  }
+  .user-card {
+    display: flex;
+    border-radius: $chat-radius;
+    // flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 250px;
+    border: 1px solid darken($color: $card-background, $amount: 5);
+    background-color: $card-background;
+  }
+}
+
+.rightbar {
+  padding-left: 1.5rem;
+  padding-right: 0rem;
+
+  .user-card,
+  .grid-card {
+    background-color: rgba(242, 246, 252, 0.5);
+  }
+
+  .grid-card {
+    min-height: 200px;
+    border-radius: $chat-radius;
+    border: 1px solid darken($color: $card-background, $amount: 5);
+
+    padding: 2rem;
+
+    .row > div {
+      margin-bottom: 2rem;
+    }
+  }
+
+  .mini-card {
+    padding: 0.75rem;
+    background-color: rgb(216, 228, 251);
+    border-radius: $chat-radius;
+    // width: 47%;
+    // height: 96px;
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    .txt {
+      > div {
+        font-weight: bold;
+      }
+      p {
+        font-size: 0.8rem;
+      }
+    }
+
+    &.blue {
+      background-color: rgb(216, 228, 251);
+      border: 1px solid darken($color: rgb(216, 228, 251), $amount: 5);
+      svg {
+        color: rgb(28, 92, 230);
+      }
+      .txt {
+        > div {
+          color: rgb(28, 92, 230);
+        }
+        p {
+          color: rgb(28, 92, 230);
+        }
+      }
+    }
+    &.green {
+      background-color: rgb(227, 246, 244);
+      border: 1px solid darken($color: rgb(227, 246, 244), $amount: 5);
+      svg {
+        color: rgb(4, 184, 156);
+      }
+      .txt {
+        > div {
+          color: rgb(4, 184, 156);
+        }
+        p {
+          color: rgb(4, 184, 156);
+        }
+      }
+    }
+
+    &.orange {
+      background-color: rgb(255, 241, 232);
+      border: 1px solid darken($color: rgb(255, 241, 232), $amount: 5);
+      svg {
+        color: rgb(242, 104, 67);
+      }
+      .txt {
+        > div {
+          color: rgb(242, 104, 67);
+        }
+        p {
+          color: rgb(242, 104, 67);
+        }
+      }
+    }
+
+    &.purple {
+      background-color: rgb(247, 243, 255);
+      border: 1px solid darken($color: rgb(247, 243, 255), $amount: 5);
+      svg {
+        color: rgb(109, 92, 185);
+      }
+      .txt {
+        > div {
+          color: rgb(109, 92, 185);
+        }
+        p {
+          color: rgb(109, 92, 185);
+        }
+      }
+    }
+  }
+}
+
+.input-clean {
+  border: none;
+  background-color: transparent;
+  width: 100%;
+  height: 100%;
+  // padding: 0 0.5rem;
+  &:focus,
+  &:active {
+    border: none;
+    outline: none;
+  }
+}
+
+$indicator-size: 12px;
+
+.onlineIndicator {
+  height: $indicator-size;
+  width: $indicator-size;
+  border-radius: $indicator-size;
+  // background-color: rgb(4, 184, 156);
+
+  position: absolute;
+  margin-left: 3.5rem;
+  margin-bottom: 2rem;
+}

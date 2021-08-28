@@ -1,0 +1,85 @@
+$theme-colors: (
+  'info': tomato,
+  'danger': teal,
+  'primary': rgb(25, 35, 59),
+);
+@import '~bootstrap/scss/bootstrap';
+@import './variables';
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+* {
+  box-sizing: border-box;
+}
+
+li {
+  list-style-type: none;
+}
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.accordion-item {
+  border: none !important;
+}
+.accordion-button {
+  background-color: white !important;
+  color: $primary-color !important;
+  font-weight: bold;
+  &:focus {
+    box-shadow: none !important;
+  }
+}
+
+.logo {
+  margin-bottom: 32px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  $circle-size: 48px;
+
+  h2 {
+    line-height: $circle-size;
+    color: $primary-color;
+    margin: 0;
+    font-weight: bold;
+  }
+  .circle {
+    height: $circle-size;
+    width: $circle-size;
+    border-radius: $circle-size;
+    margin-right: $circle-size / 3;
+    border: 1px solid darken($color: $primary-color-light, $amount: 10);
+    background-color: $primary-color-light;
+
+    // logo text
+    > div {
+      text-align: center;
+      line-height: $circle-size;
+      color: $color-3;
+      font-weight: bold;
+      transform: rotate(-20deg);
+      font-style: italic;
+      font-size: 1.2rem;
+    }
+  }
+}
+
+input {
+  &:focus {
+    border: none;
+  }
+}
