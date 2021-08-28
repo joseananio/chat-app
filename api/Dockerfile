@@ -6,14 +6,18 @@ WORKDIR /usr/src/app/api
 # RUN useradd -m runner --uid=1000 && echo "${USER}:${PW}" | \
 #       chpasswd
 # USER 1000:1000
-RUN echo $UID
-RUN whoami
-RUN npm i -g npmrc
-RUN npmrc -c default
-RUN npmrc default
-COPY  .npmrc /usr/src/app/api/.npmrc
+COPY . .
+
+# RUN echo $UID
+# RUN whoami
+# RUN npm i -g npmrc
+# RUN npmrc -c default
+# RUN npmrc default
+# COPY  .npmrc /usr/src/app/api/.npmrc
+# RUN cat .npmrc
 
 COPY package*.json ./
+
 
 RUN yarn
 

@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@7speck/logger@^0.1.5":
-  version "0.1.5"
-  resolved "https://npm.pkg.github.com/download/@7speck/logger/0.1.5/fd8f6be935f0114f0ef743c15253bbb3ed3cb94ee4ff924c7c7c2a5531551691#c447cdce7ca76ebb9d48fedea72c6a87f5049c7e"
-  integrity sha512-lM0WVghI+dKOXECVF6ruxFwQXqZflrY5QkX1vgy8JDdn1JS+jUsfhv2tMWSdN1bonNUFAPvrmpgS8BL/95f6mA==
+"@7speck/logger@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@7speck/logger/-/logger-1.0.1.tgz#23adbbecd57bfc6102dc349015826b598d72b471"
+  integrity sha512-ITCsfPcwqSg/n0yiXjDHvK+JIxxkt4MHffM0qWlmVzI6Lbkw4p5QFPTZQih5hQlVQEINd5e3d+/WMUbxzk4B+A==
   dependencies:
     jet-logger "^1.0.4"
     js-logger "^1.6.1"
@@ -146,13 +146,6 @@
   dependencies:
     "@types/mime" "^1"
     "@types/node" "*"
-
-"@types/socket.io@^3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@types/socket.io/-/socket.io-3.0.2.tgz#606c9639e3f93bb8454cba8f5f0a283d47917759"
-  integrity sha512-pu0sN9m5VjCxBZVK8hW37ZcMe8rjn4HHggBN5CbaRTvFwv5jOmuIRZEuddsBPa9Th0ts0SIo3Niukq+95cMBbQ==
-  dependencies:
-    socket.io "*"
 
 "@types/webidl-conversions@*":
   version "6.1.1"
@@ -1449,7 +1442,7 @@ socket.io-parser@~4.0.4:
     component-emitter "~1.3.0"
     debug "~4.3.1"
 
-socket.io@*, socket.io@^4.1.3:
+socket.io@^4.1.3:
   version "4.1.3"
   resolved "https://registry.yarnpkg.com/socket.io/-/socket.io-4.1.3.tgz#d114328ef27ab31b889611792959c3fa6d502500"
   integrity sha512-tLkaY13RcO4nIRh1K2hT5iuotfTaIQw7cVIe0FUykN3SuQi0cm7ALxuyT5/CtDswOMWUzMGTibxYNx/gU7In+Q==

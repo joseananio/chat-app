@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@7speck/logger": "^0.1.5",
+    "@7speck/logger": "^1.0.1",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
@@ -29,5 +29,8 @@
     "socket.io": "^4.1.3",
     "ts-node": "^10.2.1",
     "typescript": "^4.3.5"
+  },
+  "engines": {
+    "node": "14.x"
   }
 }
