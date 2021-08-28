@@ -13,7 +13,7 @@ export const initializeSocket = (server) => {
 
   const io = new Server(server, {
     cors: {
-      origin: process.env.SOCKET_CORS_HOST,
+      origin: '*',
       methods: ['GET', 'POST'],
     },
   });

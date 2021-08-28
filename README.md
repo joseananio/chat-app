@@ -50,21 +50,18 @@ yarn start
 
 ```bash
 sudo apt update
-# git
-sudo apt install git curl
+# git, docker
+sudo apt install git curl docker.io docker-compose
 #nodejs, yarn
 curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
 sudo apt install nodejs -y
 npm -v
 node -v
 sudo npm i -g yarn
-#docker
-sudo apt install \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release
 
-sudo apt install docker-ce docker-ce-cli containerd.io docker-compose
+#setup docker
+sudo systemctl enable docker
+sudo systemctl start docker
+#from project dir
+docker-compose up
 ```

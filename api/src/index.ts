@@ -32,10 +32,13 @@ server_s.listen(Number(process.env.PORT_S), String(process.env.HOST), () => {
   logger.imp(`HTTPS Server started on ${process.env.PORT_S}`);
 });
 
-server_s.listen(Number(process.env.PORT), String(process.env.HOST), () => {
+server.listen(Number(process.env.PORT), String(process.env.HOST), () => {
   logger.info(`HTTP Server started on ${process.env.PORT}`);
 });
 
 try {
   initializeSocket(server_s);
-} catch (error) {}
+  initializeSocket(server);
+} catch (error) {
+  console.log('soc err:', error);
+}
