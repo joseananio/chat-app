@@ -6,6 +6,8 @@ import './App.scss';
 import config from './env.json';
 import { getRandomPhotoUrl } from './lib/media';
 import { getUserIdentifier } from './lib/user';
+import ActionView from './modules/auth/action';
+import LoadingView from './modules/auth/loading';
 import { LoginView } from './modules/auth/login';
 import NoChatView from './modules/chat/components/no-chat-view';
 import { Rightbar } from './modules/chat/rightbar';
@@ -128,7 +130,7 @@ const App: React.FC<any> = ({ children }) => {
   }, [user, connected]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingView />;
   }
 
   if (!isAuthenticated) return <LoginView />;
@@ -161,6 +163,9 @@ const App: React.FC<any> = ({ children }) => {
   // WARNING: DEMO ONLY!!!!
   const handleDBReset = () => {
     socket.emit('reset');
+    setTimeout(() => {
+      window.location.reload();
+    }, 3000);
   };
 
   return user ? (
@@ -176,7 +181,6 @@ const App: React.FC<any> = ({ children }) => {
               rooms={rooms}
               users={users}
               handleRoomClick={handleRoomClick}
-              handleDBReset={handleDBReset}
               blockorUnblockUser={blockorUnblockUser}
             />
           </Col>
@@ -193,9 +197,12 @@ const App: React.FC<any> = ({ children }) => {
             )}
           </Col>
           <Col md={3}>
-            {activeChatRoom ? (
-              <Rightbar user={user} chatRoom={activeChatRoom} />
-            ) : null}
+            <div className="sidebar rightbar">
+              {activeChatRoom ? (
+                <Rightbar user={user} chatRoom={activeChatRoom} />
+              ) : null}
+              <ActionView handleDBReset={handleDBReset} />
+            </div>
           </Col>
         </Row>
       </Container>

@@ -1,6 +1,6 @@
 import { User } from '@auth0/auth0-react';
 import { FC, useEffect, useState } from 'react';
-import { Button, Card, Image } from 'react-bootstrap';
+import { Card, Image } from 'react-bootstrap';
 import Logo from '../../components/app/logo';
 import { Collapsible, CollapsibleItem } from '../../components/collapsible';
 import { getRandomPhotoUrl } from '../../lib/media';
@@ -15,7 +15,6 @@ type Props = {
   blocked: IUser[];
 
   handleRoomClick: (room: IRoom | INewRoom) => void;
-  handleDBReset: () => void;
   blockorUnblockUser: (user: IUser, shouldBlock: boolean) => void;
 };
 
@@ -26,7 +25,6 @@ export const Sidebar: FC<Props> = ({
   users,
   blocked = [],
   handleRoomClick,
-  handleDBReset,
   blockorUnblockUser,
 }) => {
   const [roomName, setRoomName] = useState('');
@@ -148,7 +146,6 @@ export const Sidebar: FC<Props> = ({
         ></div>
         <h3 className="mv-2">{user.name}</h3>
         <p className="fs-6 text-muted">{user.email}</p>
-        <Button onClick={handleDBReset}>Reset Database</Button>
       </Card>
       <Collapsible>
         <CollapsibleItem id="0" title={`Rooms (${rooms.length})`}>

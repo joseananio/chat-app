@@ -35,7 +35,7 @@ export const Rightbar: FC<Props> = ({ user, chatRoom }) => {
   };
 
   return (
-    <div className="sidebar rightbar">
+    <div>
       <Card className="user-card mb-5">
         <Image
           src={chatRoom?.dp}

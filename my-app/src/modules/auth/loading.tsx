@@ -1,8 +1,7 @@
 import { Col, Container, Row } from 'react-bootstrap';
-import LoginButton from './components/login-button';
 import './styles.scss';
 
-export const LoginView = () => {
+const LoadingView = () => {
   return (
     <Container fluid className="wrapper">
       <Row>
@@ -14,12 +13,12 @@ export const LoginView = () => {
         >
           <div className="d-flex flex-column justify-content-center boxx">
             <h3>ChatApp</h3>
-            <div>
-              <LoginButton />
-            </div>
+            <div>Loading...</div>
           </div>
         </Col>
       </Row>
     </Container>
   );
 };
+
+export default LoadingView;
