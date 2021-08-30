@@ -28,6 +28,7 @@ docker-compose up
 - To create a new room click the new room field, type something and then click outside
 - User can send messages to the chat
 - Click on a user's name to block or unblock
+- To use a remote database, edit the docker-compose file and set the mongodb_uri env variable
 
 ## Potential Additions
 
