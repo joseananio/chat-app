@@ -27,6 +27,7 @@ docker-compose up
 - User can start new chat under rooms by createing new Room
 - To create a new room click the new room field, type something and then click outside
 - User can send messages to the chat
+- Click on a user's name to block or unblock
 
 ## Potential Additions
 
