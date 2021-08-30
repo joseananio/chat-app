@@ -3,8 +3,11 @@
   "version": "0.0.0",
   "description": "Chat app",
   "main": "dist/index.js",
+  "module": "src/index.ts",
   "scripts": {
-    "start": "nodemon ./src/index.ts",
+    "dev": "nodemon ./src/index.js",
+    "start": "node .",
+    "build": "tsc && cp -r src/keys dist/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

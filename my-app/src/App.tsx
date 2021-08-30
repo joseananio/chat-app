@@ -3,9 +3,10 @@ import { useEffect, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { io } from 'socket.io-client';
 import './App.scss';
-import LoginButton from './components/auth/login-button';
 import config from './env.json';
 import { getRandomPhotoUrl } from './lib/media';
+import { getUserIdentifier } from './lib/user';
+import { LoginView } from './modules/auth/login';
 import NoChatView from './modules/chat/components/no-chat-view';
 import { Rightbar } from './modules/chat/rightbar';
 import { Sidebar } from './modules/chat/sidebar';
@@ -20,9 +21,39 @@ const App: React.FC<any> = ({ children }) => {
   const [activeChatRoom, setActiveChatRoom] = useState<IRoom | null>(null);
   const [rooms, setRooms] = useState<IRoom[]>([]);
   const [users, setUsers] = useState<IUser[]>([]);
+  const [blockedUsers, setBlockedUsers] = useState<IUser[]>([]);
   const [messages, setMessages] = useState<any>([]);
 
+  const handleUsersUpdate = (_users: IUser[]) => {
+    if (user) {
+      const myId = getUserIdentifier(user);
+      const me = _users.find((usr) => usr.identifier === myId);
+
+      const blockedFilter = (usr) => me?.blocked?.includes(usr.identifier);
+      const unblockedFilter = (usr) => !me?.blocked?.includes(usr.identifier);
+
+      setBlockedUsers(_users.filter(blockedFilter));
+      setUsers(_users.filter(unblockedFilter));
+    }
+  };
+
+  const handleIncomingMessages = (__messages: IMessage[]) => {
+    const _messages: IMessage[] = [];
+    __messages.forEach((msg) => {
+      const messageAdded = _messages.find((_msg) => _msg.id === msg.id);
+      if (!messageAdded) {
+        _messages.push(msg);
+      }
+    });
+    setMessages(_messages);
+  };
+
+  const blockorUnblockUser = (user: IUser, shouldBlock: boolean) => {
+    socket.emit('block', { user, shouldBlock });
+  };
+
   useEffect(() => {
+    // always recreates subscriptions
     socket.off('notice');
     socket.off('disconnect');
     socket.off('connect_error');
@@ -48,7 +79,7 @@ const App: React.FC<any> = ({ children }) => {
     socket.on('notice', (message) => {
       console.log('Notice: ' + message);
     });
-  }, [socket, setConnected]);
+  }, [socket, setConnected, user]);
 
   useEffect(() => {
     /** throw away the old listener,
@@ -61,12 +92,13 @@ const App: React.FC<any> = ({ children }) => {
     // listen for next message
     socket.on('message', (msg: IMessage) => {
       // concatenate and save
-      setMessages([...messages, msg]);
+      handleIncomingMessages([...messages, msg]);
     });
 
     socket.on('previousMessages', (msgs: IMessage[]) => {
-      setMessages([...messages, ...msgs]);
+      handleIncomingMessages([...messages, ...msgs]);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages, socket]);
 
   useEffect(() => {
@@ -81,9 +113,7 @@ const App: React.FC<any> = ({ children }) => {
       rooms.map((room) => socket.emit('joinRoom', room));
     });
 
-    socket.on('showUsers', (users) => {
-      setUsers(users);
-    });
+    socket.on('showUsers', handleUsersUpdate);
   }, [socket, user]);
 
   useEffect(() => {
@@ -101,7 +131,7 @@ const App: React.FC<any> = ({ children }) => {
     return <div>Loading...</div>;
   }
 
-  if (!isAuthenticated) return <LoginButton />;
+  if (!isAuthenticated) return <LoginView />;
 
   /**
    * Create a chatroom
@@ -140,12 +170,14 @@ const App: React.FC<any> = ({ children }) => {
         <Row>
           <Col md={3}>
             <Sidebar
+              blocked={blockedUsers}
               user={user}
               connected={connected}
-              handleRoomClick={handleRoomClick}
               rooms={rooms}
               users={users}
+              handleRoomClick={handleRoomClick}
               handleDBReset={handleDBReset}
+              blockorUnblockUser={blockorUnblockUser}
             />
           </Col>
           <Col md={6}>

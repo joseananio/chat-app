@@ -1,4 +1,5 @@
 import { IUser } from './../../types';
+// TODO, does not include offline features
 export class Users {
   _users: IUser[] = [];
 

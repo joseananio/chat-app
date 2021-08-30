@@ -4,29 +4,33 @@ import { connectToDatabase } from './lib/store.mongo/client';
 import { mongo_db_src } from './lib/store.mongo/index';
 import { getRandomId } from './lib/utils';
 import { INewMessage, IRoom, IUser } from './types';
-const getUserId = async (socket) => {
-  return socket.id;
-};
 
 export const initializeSocket = (server) => {
   const { users, rooms, messages } = mongo_db_src;
 
   const io = new Server(server, {
     cors: {
-      origin: '*',
+      origin: process.env.SOCKET_CORS_HOST,
       methods: ['GET', 'POST'],
     },
   });
 
   io.on('connection', async (socket: any) => {
+    // user connects, prepar socket listeners
+
+    // User is disconnected
     socket.on('disconnect', async () => {
       logger.warn('disconnected: ', socket.user);
-      // TODO
+
+      // await users.offline(socket.user);
       await users.remove(socket.user);
 
       const _users = await users.getAll();
-      socket.emit('showRooms', rooms);
+
+      socket.emit('showRooms', await rooms.getAll());
       socket.broadcast.emit('showUsers', _users);
+
+      io.emit('notice', `${socket.user?.name} left`);
     });
 
     // user joins socket
@@ -34,21 +38,21 @@ export const initializeSocket = (server) => {
     socket.on('register', async (user: IUser) => {
       if (user.name && user.identifier) {
         socket.user = user;
-
         await users.add(socket.user);
-        const _rooms = await rooms.getAll(user.identifier);
+
+        const _rooms = await rooms.getAll();
         const _users = await users.getAll();
 
-        socket.emit('showRooms', _rooms);
-        socket.emit('showUsers', _users);
-        socket.broadcast.emit('showUsers', _users);
+        io.emit('showRooms', _rooms);
+        io.emit('showUsers', _users);
+        // socket.broadcast.emit('showUsers', _users);
         logger.info(`\\registered\\${user.identifier}: ${user.name} `);
       }
     });
 
     // user requests for rooms??
     socket.on('getRooms', async () => {
-      const _rooms = await rooms.getAll(socket.user.identifier);
+      const _rooms = await rooms.getAll();
       logger.info(
         `INFO: \\getRooms\\${socket.user.identifier} -> [showRooms] ${_rooms.length}`
       );
@@ -61,9 +65,11 @@ export const initializeSocket = (server) => {
 
       await rooms.add(room);
       socket.join(room.id);
+
+      // tell the creator
       socket.emit('newRoomUpdate', room);
 
-      const _rooms = await rooms.getAll(socket.user?.identifier);
+      const _rooms = await rooms.getAll();
 
       if (room.private) {
         io.to(room.id).emit('showRooms', _rooms);
@@ -86,9 +92,24 @@ export const initializeSocket = (server) => {
       socket.emit('previousMessages', _messages);
     });
 
+    socket.on('block', async ({ user, shouldBlock }) => {
+      await users.block(socket.user, user, shouldBlock);
+
+      const _user = await users.get(socket.user.identifier);
+      socket.user = _user;
+      const _users = await users.getAll();
+      logger.info(
+        `${socket.user.name} ${shouldBlock ? 'blocked' : 'unblocked'} ${
+          user.name
+        }`
+      );
+      io.emit('showUsers', _users);
+    });
+
     socket.on('message', async (message: INewMessage) => {
       if (message?.message) {
         const room = await rooms.get(message.room);
+
         if (room) {
           const _message = { ...message, id: getRandomId() };
           await messages.add(_message);
@@ -104,6 +125,7 @@ export const initializeSocket = (server) => {
       }
     });
 
+    // We want to reset the db: DEMO Only!!
     socket.on('reset', async () => {
       try {
         logger.info('Reseting System');
@@ -126,6 +148,9 @@ export const initializeSocket = (server) => {
         logger.warn('Reset possibly failed');
       }
     });
+
+    // notify others of new user
+    io.emit('notice', `A new user is joining`);
   });
   logger.info('socket started');
 };

@@ -14,6 +14,8 @@ export interface IUser {
   identifier: string;
   createdAt: string;
   dp?: string;
+  offline?: boolean;
+  blocked?: string[];
 }
 
 export interface INewMessage {

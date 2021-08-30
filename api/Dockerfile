@@ -2,27 +2,17 @@ FROM node:14
 
 WORKDIR /usr/src/app/api
 
-# RUN npm i -g yarn
-# RUN useradd -m runner --uid=1000 && echo "${USER}:${PW}" | \
-#       chpasswd
-# USER 1000:1000
-COPY . .
-
-# RUN echo $UID
-# RUN whoami
-# RUN npm i -g npmrc
-# RUN npmrc -c default
-# RUN npmrc default
-# COPY  .npmrc /usr/src/app/api/.npmrc
-# RUN cat .npmrc
-
 COPY package*.json ./
-
-
 RUN yarn
 
-EXPOSE 3001
-EXPOSE 8443
+COPY . .
+# define variables in docker compose
+RUN rm .env
+
+RUN yarn build
+
+EXPOSE 80
+EXPOSE 443
 
 
 CMD ["npm", "run", "start"]

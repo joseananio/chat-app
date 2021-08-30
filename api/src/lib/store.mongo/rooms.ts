@@ -25,7 +25,7 @@ export class Rooms {
     await collection.deleteOne({ id: room.id });
   }
 
-  async getAll(user) {
+  async getAll() {
     const collection = await this.conn();
     return await collection.find({}).toArray();
   }

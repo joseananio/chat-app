@@ -12,21 +12,30 @@ type Props = {
   connected: boolean;
   rooms: IRoom[];
   users: IUser[];
+  blocked: IUser[];
+
   handleRoomClick: (room: IRoom | INewRoom) => void;
   handleDBReset: () => void;
+  blockorUnblockUser: (user: IUser, shouldBlock: boolean) => void;
 };
 
 export const Sidebar: FC<Props> = ({
   user,
   connected,
-  handleRoomClick,
   rooms,
   users,
+  blocked = [],
+  handleRoomClick,
   handleDBReset,
+  blockorUnblockUser,
 }) => {
   const [roomName, setRoomName] = useState('');
   const [_users, setUsers] = useState<IUser[]>([]);
 
+  /**
+   * User types the name of a room, and then clicks outside
+   * Create a new room and broadcast
+   */
   const handleNewPublicRoomBlur = () => {
     if (roomName) {
       handleRoomClick({
@@ -38,6 +47,10 @@ export const Sidebar: FC<Props> = ({
     setRoomName('');
   };
 
+  /**
+   * Prepare current user: User as IUser
+   * @returns IUser
+   */
   const getMeAsParticipant = () => {
     return {
       name: String(user.name || user.nickname),
@@ -46,34 +59,11 @@ export const Sidebar: FC<Props> = ({
     };
   };
 
-  useEffect(() => {
-    const myIdentifier = getUserIdentifier(user);
-    const privateRooms = rooms.filter((room) => room.private);
-    const iHaveSelftNoteRoom = privateRooms.find(
-      (room) =>
-        room.participants?.length === 1 &&
-        room.participants?.[0].identifier === myIdentifier
-    );
-    const usersInPrivateChats: IRoom['participants'] = [];
-    privateRooms.forEach((room) => {
-      (room.participants || []).map((part) => usersInPrivateChats.push(part));
-    });
-    const usersIChatWith = usersInPrivateChats; // Including me, for self Notes
-
-    const usersIwannaChatWith = users.filter(
-      (_user) =>
-        !usersIChatWith.find((__user) => __user.identifier === _user.identifier)
-    );
-    if (
-      !iHaveSelftNoteRoom &&
-      !usersIwannaChatWith.find((usr) => usr.identifier === myIdentifier)
-    ) {
-      usersIwannaChatWith.push(getMeAsParticipant() as any);
-    }
-    setUsers(usersIwannaChatWith);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [users, rooms, user]);
-
+  /**
+   * When I click on a user ive not chatted with
+   * Create a room for us and remove the user
+   * @param _user: IUser
+   */
   const handleUserClick = (_user: IUser) => {
     const myIdentifier = getUserIdentifier(user);
     const thisIsSelfNote = _user.identifier === myIdentifier;
@@ -90,6 +80,54 @@ export const Sidebar: FC<Props> = ({
       participants: thisIsSelfNote ? [me] : us,
     } as INewRoom);
   };
+
+  /**
+   * Double click on a user to block or unblock
+   * @param user Iuser
+   */
+  const handleBlockOrUnblockUser = (_user: IUser, shouldBlock = true) => {
+    const myId = getUserIdentifier(user);
+
+    // we dont wanna block our current user
+    if (_user.identifier !== myId) {
+      blockorUnblockUser(_user, shouldBlock);
+    }
+  };
+
+  /**
+   * We want to show users you havent started a chat with in one section and add
+   * the others to rooms
+   * TODO: make this simple
+   */
+  useEffect(() => {
+    const myIdentifier = getUserIdentifier(user);
+    const privateRooms = rooms.filter((room) => room.private);
+
+    const iHaveSelftNoteRoom = privateRooms.find(
+      (room) =>
+        room.participants?.length === 1 &&
+        room.participants?.[0].identifier === myIdentifier
+    );
+
+    const usersInPrivateChats: IRoom['participants'] = [];
+    privateRooms.forEach((room) => {
+      (room.participants || []).map((part) => usersInPrivateChats.push(part));
+    });
+    const usersIChatWith = usersInPrivateChats; // Including me, for self Notes
+
+    const usersIwannaChatWith = users.filter(
+      (_user) =>
+        !usersIChatWith.find((__user) => __user.identifier === _user.identifier)
+    );
+    // if (
+    //   !iHaveSelftNoteRoom &&
+    //   !usersIwannaChatWith.find((usr) => usr.identifier === myIdentifier)
+    // ) {
+    //   usersIwannaChatWith.push(getMeAsParticipant() as any);
+    // }
+    setUsers(usersIwannaChatWith);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [users, rooms, user]);
 
   return (
     <div className="sidebar">
@@ -140,10 +178,14 @@ export const Sidebar: FC<Props> = ({
           </ul>
         </CollapsibleItem>
 
-        <CollapsibleItem id="1" title={`New Users (${_users.length})`}>
+        <CollapsibleItem id="1" title={`Active Users (${_users.length})`}>
           <ul>
             {_users.map((_user, idx) => (
-              <li key={idx} onClick={() => handleUserClick(_user)}>
+              <li
+                key={idx}
+                onClick={() => handleBlockOrUnblockUser(_user, true)}
+                // onDoubleClick={() => handleBlockOrUnblockUser(_user, true)}
+              >
                 <Image
                   src={_user.dp || `https://picsum.photos/10${idx}/10${idx}`}
                   height={48}
@@ -151,7 +193,26 @@ export const Sidebar: FC<Props> = ({
                   style={{ marginRight: 12 }}
                   roundedCircle
                 />
-                {_user.name === user.name ? 'Notes' : _user.name}
+                {_user.name}
+              </li>
+            ))}
+          </ul>
+        </CollapsibleItem>
+        <CollapsibleItem id="1" title={`Blocked Users (${blocked.length})`}>
+          <ul>
+            {blocked.map((_user, idx) => (
+              <li
+                key={idx}
+                onClick={() => handleBlockOrUnblockUser(_user, false)}
+              >
+                <Image
+                  src={_user.dp || `https://picsum.photos/10${idx}/10${idx}`}
+                  height={48}
+                  width={48}
+                  style={{ marginRight: 12 }}
+                  roundedCircle
+                />
+                {_user.name}
               </li>
             ))}
           </ul>

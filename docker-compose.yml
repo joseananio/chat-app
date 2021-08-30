@@ -1,12 +1,35 @@
 version: '3.3'
 services:
+  chat_db:
+    container_name: chat_db
+    image: mongo
+    ports:
+      - '27017:27017'
+
   chat_api:
     build:
       context: ./api
     container_name: chat_api
     ports:
-      - '8443:8443'
-      - '3001:3001'
+      - '443:443'
+      - '80:80'
+
+    environment:
+      PORT: 3001
+      PORT_S: 8443 # https
+      
+    environment:
+      # DB
+      - MONGODB_DB=ChatApp
+      # local (dockerized) db
+      - MONGODB_URI=mongodb://chat_db:27017/
+      # Atlas db
+      # - MONGODB_URI=mongodb+srv://chatapp-user:HKhHFNClKYJvSWDg@cluster0.ucimw.mongodb.net/
+      - HOST=0.0.0.0
+      # socket.io
+      - SOCKET_CORS_HOST=*
+    links:
+      - chat_db
 
   chat_frontend:
     build:
@@ -17,15 +40,4 @@ services:
     links:
       - chat_api
     stdin_open: true
-
-  # mongo:
-  #   container_name: mongo
-  #   image: mongo
-  #   ports:
-  #     - '27017:27017'
-# Pushing changes
-# 1. start the container
-# 2. commit changes: docker commit -m "Added LAMP Server" -a "m3lt" pillbar-x-service pillbar/x-service:latest
-# 3. push changes: docker push pillbar/x-service
-
 # docker run -it -P27017:27017 -v /var/lib/mongodb:/data/mongo mongo
